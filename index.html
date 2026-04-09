@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopeeViral — Encontre Produtos Virais e Ganhe como Afiliado</title>
+<meta name="description" content="Ferramenta que encontra automaticamente os produtos mais virais da Shopee, calcula score de viralidade e gera sua legenda pronta com link de afiliado em 1 clique.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --L: #ee4d2d;
+  --L2: #ff6b47;
+  --dark: #0a0a0b;
+  --dark2: #111113;
+  --dark3: #18181b;
+  --dark4: #222226;
+  --muted: #666;
+  --text: #f0ede8;
+  --text2: #aaa;
+  --green: #22c55e;
+  --yellow: #f59e0b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0 }
+
+html { scroll-behavior: smooth }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── UTILIDADES ─────────────────────────────────────────────── */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px }
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 99px;
+  border: 1px solid rgba(238,77,45,.4);
+  color: var(--L2);
+  margin-bottom: 20px;
+}
+.btn-cta {
+  display: inline-block;
+  background: var(--L);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 16px 40px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background .2s, transform .15s;
+  cursor: pointer;
+  border: none;
+}
+.btn-cta:hover { background: #d63e20; transform: translateY(-1px) }
+.btn-cta:active { transform: scale(.98) }
+.btn-cta.grande { font-size: 18px; padding: 20px 56px; border-radius: 10px }
+.btn-outline {
+  display: inline-block;
+  color: var(--text2);
+  font-size: 14px;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  transition: all .2s;
+}
+.btn-outline:hover { border-color: #555; color: var(--text) }
+
+/* ── NAV ─────────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(10,10,11,.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #1a1a1a;
+  height: 60px;
+  display: flex; align-items: center;
+}
+.nav-inner {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  width: 100%; max-width: 1100px;
+  margin: 0 auto; padding: 0 24px;
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: .04em;
+  color: #fff;
+}
+.nav-logo span { color: var(--L) }
+.nav-links { display: flex; gap: 28px; align-items: center }
+.nav-links a {
+  font-size: 13px; color: var(--text2); text-decoration: none;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text) }
+
+/* ── HERO ─────────────────────────────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 100px 0 60px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.hero-eyebrow {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 24px;
+}
+.live-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.4) }
+  50%      { box-shadow: 0 0 0 6px rgba(34,197,94,0) }
+}
+.hero-eyebrow span { font-size: 12px; color: var(--green); letter-spacing: .08em }
+
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px, 7vw, 84px);
+  line-height: .95;
+  letter-spacing: .02em;
+  margin-bottom: 24px;
+}
+h1 .destaque { color: var(--L) }
+h1 .linha2 { display: block; color: var(--text2); font-size: .75em }
+
+.hero-sub {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text2);
+  margin-bottom: 36px;
+  max-width: 460px;
+}
+.hero-sub strong { color: var(--text); font-weight: 500 }
+
+.hero-ctas { display: flex; gap: 14px; align-items: center; flex-wrap: wrap }
+
+.hero-proof {
+  display: flex; gap: 24px; margin-top: 36px;
+  flex-wrap: wrap;
+}
+.proof-item { display: flex; align-items: center; gap: 8px }
+.proof-item .num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; color: var(--L);
+}
+.proof-item .label { font-size: 12px; color: var(--text2); line-height: 1.3 }
+
+/* mockup flutuante */
+.hero-mockup {
+  position: relative;
+}
+.mockup-window {
+  background: var(--dark3);
+  border: 1px solid #2a2a2e;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,.6);
+}
+.mockup-bar {
+  background: var(--dark4);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid #222;
+}
+.mockup-dots { display: flex; gap: 5px }
+.mockup-dots span {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.mockup-dots span:nth-child(1) { background: #ff5f57 }
+.mockup-dots span:nth-child(2) { background: #febc2e }
+.mockup-dots span:nth-child(3) { background: #28c840 }
+.mockup-bar .url {
+  background: #111;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: #555;
+  flex: 1; text-align: center;
+}
+.mockup-body { padding: 16px }
+
+.mock-search {
+  background: #111;
+  border: 1px solid #2a2a2e;
+  border-radius: 7px;
+  padding: 8px 14px;
+  font-size: 12px; color: #555;
+  margin-bottom: 12px;
+}
+.mock-card {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex; gap: 10px;
+  margin-bottom: 8px;
+  align-items: center;
+  transition: border-color .3s;
+}
+.mock-card.viral { border-color: rgba(238,77,45,.4) }
+.mock-img {
+  width: 44px; height: 44px;
+  border-radius: 6px;
+  background: #1a1a1a;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.mock-info { flex: 1; min-width: 0 }
+.mock-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px }
+.mock-nome { font-size: 11px; font-weight: 500; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px }
+.mock-badge {
+  font-size: 9px; font-weight: 700;
+  padding: 2px 6px; border-radius: 99px;
+  text-transform: uppercase; flex-shrink: 0;
+}
+.mb-viral { background: var(--L); color: #fff }
+.mb-tend  { background: #c05621; color: #fff }
+.mb-alta  { background: #276749; color: #d1fae5 }
+.mock-bottom { display: flex; gap: 8px; font-size: 10px; color: #555 }
+.mock-bottom .preco { color: #ddd; font-weight: 500 }
+.mock-bottom .desc { color: var(--green) }
+.score-bar {
+  background: #1a1a1a; border-radius: 99px; height: 4px; margin-top: 6px; overflow: hidden;
+}
+.score-fill { height: 100%; border-radius: 99px; background: var(--L) }
+
+/* decoração de fundo */
+.hero-bg-orb {
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(238,77,45,.06) 0%, transparent 70%);
+  top: -100px; right: -200px;
+  pointer-events: none;
+}
+
+/* ── COMO FUNCIONA ──────────────────────────────────────────── */
+#como {
+  padding: 100px 0;
+  border-top: 1px solid #111;
+}
+.section-header { text-align: center; margin-bottom: 60px }
+h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 5vw, 56px);
+  letter-spacing: .03em;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+.section-sub { font-size: 16px; color: var(--text2); max-width: 480px; margin: 0 auto; line-height: 1.7 }
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2px;
+  background: #111;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #1a1a1a;
+}
+.step {
+  background: var(--dark);
+  padding: 36px 28px;
+  position: relative;
+}
+.step-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  line-height: 1;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+.step-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: rgba(238,77,45,.1);
+  border: 1px solid rgba(238,77,45,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+.step h3 { font-size: 16px; font-weight: 500; margin-bottom: 8px }
+.step p { font-size: 13px; color: var(--text2); line-height: 1.6 }
+
+/* ── FEATURES ───────────────────────────────────────────────── */
+#features {
+  padding: 100px 0;
+  background: var(--dark2);
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1px;
+  background: #1a1a1a;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #1a1a1a;
+}
+.feat {
+  background: var(--dark2);
+  padding: 32px 28px;
+  transition: background .2s;
+}
+.feat:hover { background: var(--dark3) }
+.feat-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 18px;
+}
+.feat h3 { font-size: 17px; font-weight: 500; margin-bottom: 8px }
+.feat p { font-size: 13px; color: var(--text2); line-height: 1.65 }
+
+/* ── PROVA SOCIAL / DEPOIMENTOS ─────────────────────────────── */
+#provas {
+  padding: 100px 0;
+  border-top: 1px solid #111;
+}
+.depoimentos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 48px;
+}
+.dep {
+  background: var(--dark3);
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 24px;
+}
+.dep-stars { color: var(--yellow); font-size: 14px; margin-bottom: 14px }
+.dep-text { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 18px; font-style: italic }
+.dep-author { display: flex; align-items: center; gap: 10px }
+.dep-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--L);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 500; color: #fff;
+}
+.dep-name { font-size: 13px; font-weight: 500 }
+.dep-role { font-size: 11px; color: var(--muted) }
+
+/* ── PRECOS ─────────────────────────────────────────────────── */
+#precos {
+  padding: 100px 0;
+  background: var(--dark2);
+}
+.precos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 48px;
+}
+.plano {
+  background: var(--dark3);
+  border: 1px solid #222;
+  border-radius: 14px;
+  padding: 32px 28px;
+  position: relative;
+  transition: border-color .2s, transform .2s;
+}
+.plano:hover { border-color: #444; transform: translateY(-3px) }
+.plano.popular {
+  border-color: var(--L);
+  background: var(--dark);
+}
+.plano-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--L);
+  color: #fff;
+  font-size: 11px; font-weight: 500;
+  padding: 4px 16px; border-radius: 99px;
+  white-space: nowrap;
+}
+.plano-nome { font-size: 13px; color: var(--text2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .08em }
+.plano-preco {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px; line-height: 1;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.plano-preco sup { font-size: 22px; vertical-align: super }
+.plano-preco sub { font-size: 16px; color: var(--text2) }
+.plano-periodo { font-size: 12px; color: var(--muted); margin-bottom: 24px }
+.plano-economia {
+  display: inline-block;
+  background: rgba(34,197,94,.1);
+  border: 1px solid rgba(34,197,94,.2);
+  color: var(--green);
+  font-size: 11px; padding: 3px 10px;
+  border-radius: 6px; margin-bottom: 24px;
+}
+.plano-items { list-style: none; margin-bottom: 28px }
+.plano-items li {
+  font-size: 13px; color: var(--text2);
+  padding: 7px 0;
+  border-bottom: 1px solid #1a1a1a;
+  display: flex; align-items: center; gap: 8px;
+}
+.plano-items li:last-child { border: none }
+.plano-items li::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--L); flex-shrink: 0;
+}
+.plano-btn {
+  display: block; width: 100%; text-align: center;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 14px; font-weight: 500;
+  text-decoration: none;
+  transition: all .2s;
+}
+.plano-btn.primario { background: var(--L); color: #fff }
+.plano-btn.primario:hover { background: #d63e20 }
+.plano-btn.secundario { background: transparent; color: var(--text2); border: 1px solid #333 }
+.plano-btn.secundario:hover { border-color: #555; color: var(--text) }
+.teste-gratis {
+  text-align: center; margin-top: 28px;
+  font-size: 13px; color: var(--muted);
+}
+.teste-gratis strong { color: var(--green) }
+
+/* ── FAQ ────────────────────────────────────────────────────── */
+#faq {
+  padding: 100px 0;
+  border-top: 1px solid #111;
+}
+.faq-list { max-width: 700px; margin: 48px auto 0 }
+.faq-item {
+  border-bottom: 1px solid #1a1a1a;
+  overflow: hidden;
+}
+.faq-q {
+  width: 100%;
+  background: none; border: none; color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 500;
+  text-align: left;
+  padding: 20px 0;
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 16px;
+}
+.faq-icon {
+  width: 22px; height: 22px;
+  border: 1px solid #333; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--text2);
+  flex-shrink: 0; transition: transform .3s;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg) }
+.faq-a {
+  font-size: 14px; color: var(--text2); line-height: 1.7;
+  max-height: 0; overflow: hidden;
+  transition: max-height .3s ease, padding .3s;
+}
+.faq-item.open .faq-a { max-height: 200px; padding-bottom: 20px }
+
+/* ── CTA FINAL ──────────────────────────────────────────────── */
+#cta-final {
+  padding: 100px 0;
+  text-align: center;
+  background: var(--dark2);
+  position: relative;
+  overflow: hidden;
+}
+.cta-orb {
+  position: absolute;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(238,77,45,.08) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+#cta-final h2 { margin-bottom: 16px }
+#cta-final p { font-size: 17px; color: var(--text2); max-width: 480px; margin: 0 auto 36px; line-height: 1.7 }
+
+/* ── COUNTDOWN ──────────────────────────────────────────────── */
+.countdown-wrap {
+  display: flex; justify-content: center; gap: 16px;
+  margin-bottom: 32px;
+}
+.cd-box {
+  background: var(--dark3);
+  border: 1px solid #222;
+  border-radius: 10px;
+  padding: 14px 20px;
+  text-align: center;
+  min-width: 70px;
+}
+.cd-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px; line-height: 1;
+  color: var(--L);
+}
+.cd-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em }
+
+/* ── FOOTER ─────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid #111;
+  padding: 32px 0;
+  text-align: center;
+}
+footer p { font-size: 12px; color: var(--muted) }
+
+/* ── ANIMAÇÕES DE ENTRADA ───────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible { opacity: 1; transform: none }
+
+/* ── RESPONSIVO ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 40px }
+  .hero-mockup { display: none }
+  .nav-links .btn-cta { display: none }
+  h1 { font-size: 52px }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">Shopee<span>Viral</span></div>
+    <div class="nav-links">
+      <a href="#como">Como funciona</a>
+      <a href="#features">Recursos</a>
+      <a href="#precos">Preços</a>
+      <a href="#faq">FAQ</a>
+      <!-- TROQUE pelo link da sua Kiwify -->
+      <a href="https://pay.kiwify.com.br/VKvt0fS" class="btn-cta" style="padding:9px 22px;font-size:13px">Começar agora</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-orb"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div class="reveal">
+        <div class="hero-eyebrow">
+          <div class="live-dot"></div>
+          <span>API oficial Shopee Afiliados</span>
+        </div>
+        <h1>
+          Produtos<br>
+          <span class="destaque">Virais</span><br>
+          <span class="linha2">em 30 segundos</span>
+        </h1>
+        <p class="hero-sub">
+          Pare de gastar horas procurando produto para postar.
+          O ShopeeViral encontra os <strong>mais vendidos da Shopee</strong>,
+          calcula o score de viralidade e <strong>gera sua legenda pronta</strong>
+          com link de afiliado em 1 clique.
+        </p>
+        <div class="hero-ctas">
+          <!-- TROQUE pelo link da sua Kiwify -->
+          <a href="https://pay.kiwify.com.br/VKvt0fS" class="btn-cta grande">
+            Comprar agora
+          </a>
+          <a href="#como" class="btn-outline">Ver como funciona</a>
+        </div>
+        <div class="hero-proof">
+          <div class="proof-item">
+            <div class="num">30s</div>
+            <div class="label">para encontrar<br>produto viral</div>
+          </div>
+          <div class="proof-item">
+            <div class="num">3x</div>
+            <div class="label">mais vendas<br>por semana</div>
+          </div>
+          <div class="proof-item">
+            <div class="num">R$0</div>
+            <div class="label">para começar<br>a vender</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOCKUP -->
+      <div class="hero-mockup reveal" style="transition-delay:.2s">
+        <div class="mockup-window">
+          <div class="mockup-bar">
+            <div class="mockup-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="url">localhost:5000 — ShopeeViral</div>
+          </div>
+          <div class="mockup-body">
+            <div class="mock-search">blusa feminina...</div>
+
+            <div class="mock-card viral">
+              <div class="mock-img">👗</div>
+              <div class="mock-info">
+                <div class="mock-top">
+                  <div class="mock-nome">Blusa Cropped Feminina Tendência</div>
+                  <span class="mock-badge mb-viral">Viral</span>
+                </div>
+                <div class="mock-bottom">
+                  <span class="preco">R$ 34,90</span>
+                  <span class="desc">-42%</span>
+                  <span>3.200 vendas</span>
+                  <span>Com. 8%</span>
+                </div>
+                <div class="score-bar"><div class="score-fill" style="width:84%"></div></div>
+              </div>
+            </div>
+
+            <div class="mock-card">
+              <div class="mock-img">⌚</div>
+              <div class="mock-info">
+                <div class="mock-top">
+                  <div class="mock-nome">Smartwatch Feminino Rosa</div>
+                  <span class="mock-badge mb-tend">Tendência</span>
+                </div>
+                <div class="mock-bottom">
+                  <span class="preco">R$ 89,90</span>
+                  <span class="desc">-28%</span>
+                  <span>1.800 vendas</span>
+                  <span>Com. 6%</span>
+                </div>
+                <div class="score-bar"><div class="score-fill" style="width:61%"></div></div>
+              </div>
+            </div>
+
+            <div class="mock-card">
+              <div class="mock-img">📿</div>
+              <div class="mock-info">
+                <div class="mock-top">
+                  <div class="mock-nome">Cordão Masculino Aço Inox</div>
+                  <span class="mock-badge mb-alta">Em Alta</span>
+                </div>
+                <div class="mock-bottom">
+                  <span class="preco">R$ 24,90</span>
+                  <span class="desc">-55%</span>
+                  <span>980 vendas</span>
+                  <span>Com. 5%</span>
+                </div>
+                <div class="score-bar"><div class="score-fill" style="width:55%"></div></div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <div style="flex:1;background:#ee4d2d;border-radius:6px;padding:8px;text-align:center;font-size:11px;font-weight:500;color:#fff">Ver produto</div>
+              <div style="flex:1;background:#1a1a1a;border:1px solid #2a2a2e;border-radius:6px;padding:8px;text-align:center;font-size:11px;color:#888">Copiar link</div>
+              <div style="flex:1;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.25);border-radius:6px;padding:8px;text-align:center;font-size:11px;color:#60a5fa">Legenda</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section id="como">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="tag">Como funciona</div>
+      <h2>Do produto ao post<br>em menos de 2 minutos</h2>
+      <p class="section-sub">Sem conhecimento técnico. Sem API complicada. Você instala, digita e o programa faz o resto.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-icon">💾</div>
+        <h3>Instale o programa</h3>
+        <p>Baixe o ShopeeViral, ative com sua chave de licença e configure sua conta de afiliado Shopee em 2 minutos.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-icon">🔍</div>
+        <h3>Busque seu nicho</h3>
+        <p>Digite qualquer keyword — blusa feminina, capacete moto, smartwatch — e veja os mais virais aparecerem com score.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-icon">📝</div>
+        <h3>Gere a legenda</h3>
+        <p>Clique em "Legenda" em qualquer produto e receba o texto pronto para TikTok, Instagram ou WhatsApp.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-icon">🔗</div>
+        <h3>Copie e poste</h3>
+        <p>Copie o link de afiliado com 1 clique, cole na legenda e publique. Cada venda gera comissão direto pra você.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="tag">Recursos</div>
+      <h2>Tudo que um afiliado<br>precisa em um lugar</h2>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(238,77,45,.1);border:1px solid rgba(238,77,45,.2)">🔥</div>
+        <h3>Score de viralidade</h3>
+        <p>Cada produto recebe uma nota de 0 a 100 calculada por vendas, comissão, avaliação e desconto. Foque só no que vale a pena.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2)">📈</div>
+        <h3>Top mais vendidos</h3>
+        <p>Dados em tempo real da API oficial da Shopee. Ordene por mais vendidos, popular, maior comissão ou menor preço.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2)">📝</div>
+        <h3>Gerador de legendas</h3>
+        <p>Legenda pronta para TikTok, Instagram e WhatsApp com emoji, hashtags e link de afiliado. É só copiar e colar.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2)">⏰</div>
+        <h3>Agendador automático</h3>
+        <p>Configure o programa para buscar produtos automaticamente de X em X horas. Acorde com uma lista pronta de virais do dia.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2)">📊</div>
+        <h3>Histórico de buscas</h3>
+        <p>Acesse todas as buscas anteriores e veja como os scores evoluíram ao longo do tempo. Identifique tendências antes de todo mundo.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(236,72,153,.1);border:1px solid rgba(236,72,153,.2)">💰</div>
+        <h3>Filtro de comissão</h3>
+        <p>Exiba só produtos acima de X% de comissão. Maximize seus ganhos focando nos produtos que pagam mais por venda.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section id="provas">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="tag">Depoimentos</div>
+      <h2>Afiliados que já usam<br>o ShopeeViral</h2>
+    </div>
+    <div class="depoimentos reveal">
+      <div class="dep">
+        <div class="dep-stars">★★★★★</div>
+        <p class="dep-text">"Antes eu ficava 2 horas procurando produto no celular. Agora abro o programa, digito o nicho e em 30 segundos já tenho os top 10 com a legenda pronta. Triplicou minha frequência de posts."</p>
+        <div class="dep-author">
+          <div class="dep-avatar">J</div>
+          <div>
+            <div class="dep-name">Julia M.</div>
+            <div class="dep-role">Afiliada Shopee — Moda Feminina</div>
+          </div>
+        </div>
+      </div>
+      <div class="dep">
+        <div class="dep-stars">★★★★★</div>
+        <p class="dep-text">"O agendador é o que mais uso. Configuro antes de dormir, acordo com o relatório do dia pronto. Já vendi mais de R$ 3.000 em comissão no primeiro mês usando o programa."</p>
+        <div class="dep-author">
+          <div class="dep-avatar">R</div>
+          <div>
+            <div class="dep-name">Rafael S.</div>
+            <div class="dep-role">Afiliado Shopee — Eletrônicos</div>
+          </div>
+        </div>
+      </div>
+      <div class="dep">
+        <div class="dep-stars">★★★★★</div>
+        <p class="dep-text">"O score de viralidade é preciso demais. Postei um produto com score 82 e no mesmo dia bateu 500 cliques no link. Nunca tive resultado assim tentando na sorte."</p>
+        <div class="dep-author">
+          <div class="dep-avatar">A</div>
+          <div>
+            <div class="dep-name">Ana L.</div>
+            <div class="dep-role">Afiliada Shopee — Beleza</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRECOS -->
+<section id="precos">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="tag">Planos</div>
+      <h2>Escolha seu plano</h2>
+      <p class="section-sub">Pagamento único por período. Acesso imediato após confirmação.</p>
+    </div>
+    <div class="precos-grid reveal">
+
+      <div class="plano">
+        <div class="plano-nome">Mensal</div>
+        <div class="plano-preco"><sup>R$</sup>47<sub>/mês</sub></div>
+        <div class="plano-periodo">cobrado mensalmente</div>
+        <ul class="plano-items">
+          <li>Acesso completo ao programa</li>
+          <li>Buscas ilimitadas</li>
+          <li>Gerador de legendas</li>
+          <li>Agendador automático</li>
+          <li>1 computador</li>
+        </ul>
+        <!-- TROQUE pelo link do plano mensal na Kiwify -->
+        <a href="https://pay.kiwify.com.br/6Eha1d7" class="plano-btn secundario">Comprar agora</a>
+      </div>
+
+      <div class="plano popular">
+        <div class="plano-badge">Mais popular</div>
+        <div class="plano-nome">Trimestral</div>
+        <div class="plano-preco"><sup>R$</sup>117<sub>/trim</sub></div>
+        <div class="plano-periodo">equivale a R$ 39/mês</div>
+        <div class="plano-economia">Economize R$ 24</div>
+        <ul class="plano-items">
+          <li>Tudo do plano Mensal</li>
+          <li>Prioridade no suporte</li>
+          <li>Histórico ilimitado</li>
+          <li>Relatório semanal</li>
+          <li>1 computador</li>
+        </ul>
+        <!-- TROQUE pelo link do plano trimestral na Kiwify -->
+        <a href="https://pay.kiwify.com.br/VKvt0fS" class="plano-btn primario">Comprar agora</a>
+      </div>
+
+      <div class="plano">
+        <div class="plano-nome">Anual</div>
+        <div class="plano-preco"><sup>R$</sup>397<sub>/ano</sub></div>
+        <div class="plano-periodo">equivale a R$ 33/mês</div>
+        <div class="plano-economia">Economize R$ 167</div>
+        <ul class="plano-items">
+          <li>Tudo do plano Trimestral</li>
+          <li>Suporte VIP via WhatsApp</li>
+          <li>Atualizações gratuitas</li>
+          <li>2 computadores</li>
+          <li>Acesso a novos recursos</li>
+        </ul>
+        <!-- TROQUE pelo link do plano anual na Kiwify -->
+        <a href="https://pay.kiwify.com.br/9GJdkBu" class="plano-btn secundario">Comprar agora</a>
+      </div>
+
+    </div>
+    <p class="teste-gratis">
+      Acesso liberado imediatamente após o pagamento via PIX ou cartão.
+    </p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="tag">Dúvidas</div>
+      <h2>Perguntas frequentes</h2>
+    </div>
+    <div class="faq-list reveal">
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Preciso ter conta no Programa de Afiliados da Shopee?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Sim. O ShopeeViral usa a API oficial do Programa de Afiliados Shopee, então você precisa ter cadastro ativo em affiliate.shopee.com.br. O cadastro é gratuito. O programa vai te guiar para configurar tudo.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Funciona no celular ou só no computador?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">No momento o ShopeeViral roda como um programa no computador Windows. Você instala o .exe, abre e acessa pelo navegador do seu PC. Uma versão web acessível pelo celular está nos planos.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Os links gerados já vêm com meu ID de afiliado?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Sim, todos os links são gerados pela API oficial da Shopee e já vêm com seu tracking de afiliado embutido. Qualquer compra feita pelo link é rastreada e a comissão vai direto para sua conta.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Como funciona o período de teste?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Após o pagamento, você recebe sua chave de ativação por WhatsApp em até 15 minutos. Acesso liberado na hora.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Posso usar em mais de um computador?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Os planos Mensal e Trimestral permitem uso em 1 computador. O plano Anual permite 2 computadores. Se precisar trocar de PC, é só entrar em contato pelo suporte e resetamos sua licença.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          O programa realmente encontra produtos que vendem?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Os dados vêm direto da API oficial da Shopee, que retorna produtos ordenados por volume de vendas real. O score de viralidade cruza vendas, comissão, avaliação e desconto para ranquear o que vale mais divulgar.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section id="cta-final">
+  <div class="cta-orb"></div>
+  <div class="container" style="position:relative">
+    <div class="reveal">
+      <div class="tag">Oferta por tempo limitado</div>
+      <h2>Comece hoje,<br>poste <span style="color:var(--L)">amanhã</span></h2>
+      <p>Afiliados que usam o ShopeeViral postam 3x mais e convertem melhor.<br>Acesso imediato após o pagamento.</p>
+
+      <div class="countdown-wrap">
+        <div class="cd-box">
+          <div class="cd-num" id="cd-h">00</div>
+          <div class="cd-label">horas</div>
+        </div>
+        <div class="cd-box">
+          <div class="cd-num" id="cd-m">00</div>
+          <div class="cd-label">min</div>
+        </div>
+        <div class="cd-box">
+          <div class="cd-num" id="cd-s">00</div>
+          <div class="cd-label">seg</div>
+        </div>
+      </div>
+
+      <!-- TROQUE pelo link principal da Kiwify -->
+      <a href="https://pay.kiwify.com.br/VKvt0fS" class="btn-cta grande">
+        Quero o ShopeeViral agora
+      </a>
+      <div style="margin-top:16px;font-size:13px;color:var(--muted)">
+        Acesso imediato &nbsp;·&nbsp; Chave enviada por WhatsApp &nbsp;·&nbsp; Suporte (99) 98119-7113
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>© 2026 ShopeeViral — Ferramenta para Afiliados Shopee &nbsp;·&nbsp;
+       <!-- TROQUE pelo seu WhatsApp -->
+       <a href="https://wa.me/5599981197113" style="color:var(--muted);text-decoration:none">Suporte via WhatsApp</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// Reveal on scroll
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') })
+}, { threshold: 0.1 })
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el))
+
+// FAQ
+function toggleFaq(btn) {
+  const item = btn.parentElement
+  const wasOpen = item.classList.contains('open')
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'))
+  if (!wasOpen) item.classList.add('open')
+}
+
+// Countdown — 24h rolando
+function initCountdown() {
+  const saved = localStorage.getItem('sv_cd')
+  let end = saved ? parseInt(saved) : Date.now() + 24 * 3600 * 1000
+  if (!saved || end < Date.now()) {
+    end = Date.now() + 24 * 3600 * 1000
+    localStorage.setItem('sv_cd', end)
+  }
+  function tick() {
+    const diff = Math.max(0, end - Date.now())
+    const h = Math.floor(diff / 3600000)
+    const m = Math.floor((diff % 3600000) / 60000)
+    const s = Math.floor((diff % 60000) / 1000)
+    document.getElementById('cd-h').textContent = String(h).padStart(2,'0')
+    document.getElementById('cd-m').textContent = String(m).padStart(2,'0')
+    document.getElementById('cd-s').textContent = String(s).padStart(2,'0')
+    if (diff > 0) setTimeout(tick, 1000)
+  }
+  tick()
+}
+initCountdown()
+</script>
+</body>
+</html>
